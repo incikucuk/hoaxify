@@ -13,7 +13,9 @@ public class UserService {
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
      
-    @SuppressWarnings("null")
+    /**
+     * @param user
+     */
     public void save(User user){
        user.setPassword(passwordEncoder.encode(user.getPassword())); 
        userRepository.save(user);

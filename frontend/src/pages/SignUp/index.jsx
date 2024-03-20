@@ -1,19 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
+import { signUp } from "./api";
 
 export function SignUp() {
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [passwordRepeat, setPasswordRepeat] = useState();
+  const [apiProgress, setApiProgress] = useState(false);
+  const [successMessage, setSuccessMessage] = useState();
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    axios.post("/api/v1/users", {
-      username,
-      email,
-      password,
-    });
+    setSuccessMessage();
+    setApiProgress(true);
+
+    try {
+      const response = await signUp({ username, email, password });
+      setSuccessMessage(response.data.message);
+    } catch (error) {
+    } finally {
+      setApiProgress(false);
+    }
   };
 
   return (
@@ -66,11 +74,24 @@ export function SignUp() {
                 onChange={(event) => setPasswordRepeat(event.target.value)}
               ></input>
             </div>
+
+            {successMessage && (
+              <div className="alert alert-success"> {successMessage}</div>
+            )}
+
             <div className="text-center">
               <button
                 className="btn btn-primary"
-                disabled={!password || password != passwordRepeat}
+                disabled={
+                  apiProgress || !password || password !== passwordRepeat
+                }
               >
+                {apiProgress && (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Sign Up
               </button>
             </div>

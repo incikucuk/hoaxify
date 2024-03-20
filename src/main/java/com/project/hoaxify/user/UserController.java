@@ -14,7 +14,6 @@ public class UserController {
     @Autowired
     UserService userService;
     
-    @SuppressWarnings("null")
     @PostMapping("/api/v1/users")
     GenericMessage createUser(@RequestBody User user){
         userService.save(user);
